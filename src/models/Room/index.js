@@ -1,11 +1,9 @@
-import mongoose from "mongoose";
-
-import MessageSchema from "../Message/index.js";
+import mongoose from "mongoose"
+import MessageSchema from "../Message/index.js"
 
 const RoomSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true,
     default: "New Chat",
   },
   users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
@@ -13,9 +11,8 @@ const RoomSchema = new mongoose.Schema({
 
   chatHistory: {
     type: [MessageSchema],
-    required: true,
     default: [],
   },
-});
+})
 
-export default mongoose.model("Room", RoomSchema);
+export default mongoose.model("Room", RoomSchema)
