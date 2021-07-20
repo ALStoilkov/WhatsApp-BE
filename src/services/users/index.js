@@ -1,14 +1,20 @@
 import { Router } from 'express';
 import createError from 'http-errors';
 import UserModel from '../../models/User/index.js';
+import { JWTAuthenticate } from '../../auth/tools.js';
 
 const usersRouter = Router();
 
 usersRouter.post('/', async (req, res) => {
-  const newUser = new UserModel(req.body);
-  await newUser.save();
+  try {
+    const newUser = new UserModel(req.body);
+    const { _id } = await newUser.save();
 
-  res.status(201).send(newUser);
+    res.status(201).send(_id);
+  } catch (error) {
+    console.log(error);
+    next(createError(500, 'An error occurred while saving new author'));
+  }
 });
 
 usersRouter.get('/', async (req, res, next) => {
@@ -48,6 +54,25 @@ usersRouter.delete('/:id', async (req, res, next) => {
     const deleteUser = await UserModel.findByIdAndDelete(req.params.id);
     if (deleteUser) res.status(201).send('Profile deleted');
     else next(createError(400, 'Bad Request'));
+  } catch (error) {
+    next(error);
+  }
+});
+
+usersRouter.post('/login', async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    console.log(email);
+    const user = await UserModel.checkCredentials(email, password);
+
+    if (user) {
+      console.log('credentials are fine');
+      const accessToken = await JWTAuthenticate(user);
+      console.log('token', accessToken);
+      res.send({ accessToken });
+    } else {
+      next(createError(401));
+    }
   } catch (error) {
     next(error);
   }

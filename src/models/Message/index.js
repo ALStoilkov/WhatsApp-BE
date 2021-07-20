@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 const MessageSchema = new mongoose.Schema({
   content: {
@@ -9,15 +9,16 @@ const MessageSchema = new mongoose.Schema({
     attachment: String,
   },
   sender: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
+    ref: "User",
   },
   timestamp: {
     type: Date,
     required: true,
   },
-});
+})
 
-export const MessageModel = mongoose.model("Message", MessageSchema);
+export const MessageModel = mongoose.model("Message", MessageSchema)
 
-export default MessageSchema;
+export default MessageSchema
