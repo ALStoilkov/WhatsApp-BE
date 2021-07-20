@@ -78,4 +78,20 @@ usersRouter.post('/login', async (req, res, next) => {
   }
 });
 
+usersRouter.get('/', async (req, res, next) => {
+  try {
+    const users = await UserModel.find(
+      { username: req.query.username },
+      { email: 0 }
+    );
+
+    if (users) {
+      res.status(200).send(users);
+    }
+    res.send(createError(404, 'No user found'));
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default usersRouter;
