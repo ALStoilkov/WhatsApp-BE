@@ -53,7 +53,7 @@ io.on("connection", (socket) => {
     onlineUsers = onlineUsers.filter((user) => user.id !== socket.id)
   })
 
-  socket.on("sendMessage", ({ message, room }) => {
+  socket.on("sendMessage", ({ message }) => {
     // await RoomModel.findOneAndUpdate(
     //   { name: room },
     //   {
@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
     //   }
     // )
 
-    socket.to(room).emit("message", message)
+    io.sockets.emit("message", message)
   })
 })
 
