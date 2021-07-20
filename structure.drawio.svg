@@ -1,4 +1,4 @@
-<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="439px" height="281px" viewBox="-0.5 -0.5 439 281" content="&lt;mxfile&gt;&lt;diagram id=&quot;I7zhJMmRXIUh83YMPFV0&quot; name=&quot;Page-1&quot;&gt;3VbbjptADP0a3hNI2O5jbu1WarVVo6rt4wQmMOmA6WAS0q+vJ5hbYLMrdStVfcI+eDzj4zMGx1sl5TsjsvgjhFI77iQsHW/tuO506t3TwyLnCplP3AqIjAo5qAW26pdkcMJooUKZ9wIRQKPK+mAAaSoD7GHCGDj1w/ag+7tmIpIDYBsIPUS/qhBjRv35rH3xIFUU11tPfa44EXU0l5LHIoRTB/I2jrcyAFhZSbmS2rJXE1Ote/vE2+ZkRqb4kgVM/FHogosrcmlSkZC3yNGoNHLcleP6mtItd4asyFqHE94OEEeBwtyOyVFgkd+OISoSG+LMl7A7UDffr535msnDc92SU6xQbjMRWP9EsqOlMSaavKk9TZ5VQtirUlLpSy5bGpTlk9RNm4aQlCUkEs2ZQniBzy08101m/9SRxD1jcVcNNShYhlGTum0UGdyr8b75AwZkSBplFwzGEEEq9KZFicoiDW316wl5bcwHgIx5OkjEM184USD0WZSlwm8d+3vHXpec9+Kc2alOaY92m2SqBAoTcJQ3zruRWqA69lONkchLP4GiTZp+zSb9hhHQT0F6jSTyqqtWNMd4UXe8wa2qhZ1nIq2lbW/amLRHbgEq1M/cyCAW+KByBHtImzOReU6D6PGS2rlbjtw/SXqwd/RxV+0+mhdSvDRrQTnotlws1/9Z2BG17ForyyWiCOKEF4yF3Y1vY3Fb/ABnhCjvcvcvDAD3TV9Qs+EAaD5Z3QHQgH8yAGYDiX0hOQ1oqRrWZYIkBD/kCjRQ59cppHY07JXWV5DQKkrJDYgNK5Kl5UrRR3DBLxIVhpe5MkZ9f9a8AtnTyfPjdjZG9itwPR9w/Zm+Sv8v197d1aT8a1ST2/7rVIO2/WX0Nr8B&lt;/diagram&gt;&lt;/mxfile&gt;">
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="439px" height="281px" viewBox="-0.5 -0.5 439 281" content="&lt;mxfile&gt;&lt;diagram id=&quot;I7zhJMmRXIUh83YMPFV0&quot; name=&quot;Page-1&quot;&gt;3VZNc5swEP013G0wdnK0jZt0pp104sm0PSqggFzBUrHYuL++krV8BeJ4pkmn0xPap9VKevt2heOt0+pGsTz5DBGXjjuJKscLHNedTr1r/THI0SK+f2WBWImInFpgK35xAieEliLiRc8RASSKvA+GkGU8xB7GlIJD3+0JZH/XnMV8AGxDJofoVxFhQujcn7UTt1zESb31dE43TlntTVcpEhbBoQN5G8dbKwC0o7Rac2nYq4mx6z68MNucTPEML1ng2gV7Jku6XFlwlbFUW8sClchix1077lzqcKtHpUexGe0OeN6B7Rkydd6nQIZlcd6HaMJjTf4hEci3OQuNfdAC004JplJbU7NvkduUP4mKR02ALiNE0p4r5FUHIoZuOKQc1VG70OycknWs00n2oZP8a8KSbt5rkJHg4iZ0mxI9oKyMZ2g+YIBHWo1kgsIEYsiY3LToSkGZReb2wURbrc8ngJx42nHEI5UWKxH6LPJK4LfO+HtnHFQU92QcyXiR5gJKFdLJPQuZC5zlXXHJUOz75TZGIi39AkLv2uRrNuknTAP9EFqZMUda9SwVzTEuyo43qJ9awkXOslrEpqaMzh1/BY87rc+PgeMHo3pHgfKV2mNRKjIb7Y6iPWw399uXQoYJw1tRIJhLmVUpLwrdouxiZ7EaqUyu9WOq9+7RnnY0LmR4yvZSx9CldBq5858l2MJtR2vDPSILk5QWjLktxrcxuLnZsDNYRKeoy/W/0DDcq74AZ8OG0Txm3YbRgH/SMGYDST5o+Q1osQnrMqElBz/4GiTozAcZZKaVPAkpn0FMiljrLwg1QUYkK0OM0M/jkiZSEUWnPjRGfb83vQHZ08nr7Xk2RvYbcL0YKf+/360v6r0+/SidWt87teNLafMHtN0DpP+vRL3Fswfp3RSqzfbn0b5n7T+4t/kN&lt;/diagram&gt;&lt;/mxfile&gt;">
     <defs/>
     <g>
         <rect x="0" y="90" width="190" height="190" fill="#ffffff" stroke="#000000" pointer-events="all"/>
@@ -16,7 +16,6 @@
                                 <br/>
                                 status:string,
                                 <br/>
-                                rooms:[objectID]
                             </div>
                         </div>
                     </div>
@@ -39,6 +38,8 @@
                                     users:[objectID],
                                     <br/>
                                     title:string,
+                                    <br/>
+                                    admin:[ObjectIDUSERS],
                                     <br/>
                                     chatHistory:[messageObject{
                                     <br/>
@@ -75,6 +76,8 @@
                 </text>
             </switch>
         </g>
+        <path d="M 330 20 L 330 40 L 325 40 L 325 26.37" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 325 21.12 L 328.5 28.12 L 325 26.37 L 321.5 28.12 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
         <rect x="310" y="0" width="40" height="20" fill="none" stroke="none" pointer-events="all"/>
         <g transform="translate(-0.5 -0.5)">
             <switch>
