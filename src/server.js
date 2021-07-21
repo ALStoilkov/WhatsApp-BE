@@ -18,13 +18,21 @@ app.use(express.json())
 const server = createServer(app)
 const io = new Server(server, { allowEIO3: true })
 
-let onlineUsers = []
+export const onlineUsers = {
+  //'userid': socket
+}
 
 // Add "event listeners" on your socket when it's connecting
 io.on("connection", (socket) => {
   console.log(socket.id)
+  console.log(socket)
 
   console.log(socket.rooms)
+
+  // socket.on("did-connect", (userId) => {
+  //   // 'gregorio123'
+  //   onlineUsers[userId] = socket // onlineUsers['gregorio123'] = socket
+  // })
 
   // socket.on("join-room", (room) => {
   //     socket.join(room)

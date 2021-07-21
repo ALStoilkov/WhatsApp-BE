@@ -52,9 +52,30 @@ roomsRouter.post(
 
 roomsRouter.get("/myRooms", JWTAuthMiddleware, async (req, res) => {
   try {
-    const rooms = await RoomModel.find({ users: req.user })
+    const rooms = await RoomModel.find({ users: req.user }).populate("users")
+
+    // for (let room of rooms) {
+    //   // const userId = req.user._id
+    //   //onlineUsers['gregorio123'].join(room)
+    //   //onlineUsers.gregorio123.join(room)
+    //   //const gregSocket = onlineUsers.gregorio123
+    //   //gregSocket.join(room)
+    // }
+
     if (rooms) {
-      res.status(200).send(rooms)
+      res.status(200).send({ rooms, myId: req.user._id })
+    }
+    res.send(createError(404, "No user found"))
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+roomsRouter.get("/:id", JWTAuthMiddleware, async (req, res) => {
+  try {
+    const room = await RoomModel.findById(req.params.id)
+    if (room) {
+      res.status(200).send(room)
     }
     res.send(createError(404, "No user found"))
   } catch (error) {
