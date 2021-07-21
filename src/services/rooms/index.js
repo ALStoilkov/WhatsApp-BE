@@ -2,6 +2,7 @@ import { Router } from "express"
 import RoomModel from "../../models/Room/index.js"
 import createError from "create-error"
 import { JWTAuthMiddleware } from "../../auth/middlewares.js"
+import { onlineUsers } from "../../server.js"
 
 const roomsRouter = Router()
 
@@ -54,18 +55,16 @@ roomsRouter.get("/myRooms", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const rooms = await RoomModel.find({ users: req.user }).populate("users")
 
-    // for (let room of rooms) {
-    //   // const userId = req.user._id
-    //   //onlineUsers['gregorio123'].join(room)
-    //   //onlineUsers.gregorio123.join(room)
-    //   //const gregSocket = onlineUsers.gregorio123
-    //   //gregSocket.join(room)
-    // }
+    const mysocket = onlineUsers[req.user._id]
+    for (let room of rooms) mysocket.join(room._id)
+
+    console.log(mysocket.rooms)
 
     if (rooms) {
       res.status(200).send({ rooms, myId: req.user._id })
+    } else {
+      next(createError(404, "No user found"))
     }
-    res.send(createError(404, "No user found"))
   } catch (error) {
     console.log(error)
   }
@@ -76,8 +75,9 @@ roomsRouter.get("/:id", JWTAuthMiddleware, async (req, res, next) => {
     const room = await RoomModel.findById(req.params.id)
     if (room) {
       res.status(200).send(room)
+    } else {
+      next(createError(404, "No user found"))
     }
-    res.send(createError(404, "No user found"))
   } catch (error) {
     console.log(error)
   }
