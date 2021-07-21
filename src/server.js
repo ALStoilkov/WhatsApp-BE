@@ -18,9 +18,9 @@ app.use(express.json())
 const server = createServer(app)
 const io = new Server(server, { allowEIO3: true })
 
-export const onlineUsers = {
+export const onlineUsers = [
   //'userid': socket
-}
+]
 
 // Add "event listeners" on your socket when it's connecting
 io.on("connection", (socket) => {
@@ -56,10 +56,10 @@ io.on("connection", (socket) => {
   //     //io.sockets.emit("newConnection")
   //   })
 
-  socket.on("disconnect", () => {
-    console.log("Disconnecting...")
-    onlineUsers = onlineUsers.filter((user) => user.id !== socket.id)
-  })
+  // socket.on("disconnect", () => {
+  //   console.log("Disconnecting...")
+  //   onlineUsers = onlineUsers.filter((user) => user.id !== socket.id)
+  // })
 
   socket.on("sendMessage", ({ message }) => {
     // await RoomModel.findOneAndUpdate(
