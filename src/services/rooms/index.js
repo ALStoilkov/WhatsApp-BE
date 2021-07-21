@@ -5,7 +5,7 @@ import { JWTAuthMiddleware } from "../../auth/middlewares.js"
 
 const roomsRouter = Router()
 
-roomsRouter.post("/", JWTAuthMiddleware, async (req, res) => {
+roomsRouter.post("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const newRoom = new RoomModel(req.body)
     newRoom.users.push(req.user)
@@ -24,7 +24,7 @@ roomsRouter.post("/", JWTAuthMiddleware, async (req, res) => {
 roomsRouter.post(
   "/:id/addUser/:userId",
   JWTAuthMiddleware,
-  async (req, res) => {
+  async (req, res, next) => {
     try {
       const room = await RoomModel.findById(req.params.id)
       if (room) {
@@ -50,7 +50,7 @@ roomsRouter.post(
   }
 )
 
-roomsRouter.get("/myRooms", JWTAuthMiddleware, async (req, res) => {
+roomsRouter.get("/myRooms", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const rooms = await RoomModel.find({ users: req.user }).populate("users")
 
@@ -71,7 +71,7 @@ roomsRouter.get("/myRooms", JWTAuthMiddleware, async (req, res) => {
   }
 })
 
-roomsRouter.get("/:id", JWTAuthMiddleware, async (req, res) => {
+roomsRouter.get("/:id", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const room = await RoomModel.findById(req.params.id)
     if (room) {
@@ -82,5 +82,35 @@ roomsRouter.get("/:id", JWTAuthMiddleware, async (req, res) => {
     console.log(error)
   }
 })
+
+roomsRouter.post(
+  "/:id/addMessage",
+  JWTAuthMiddleware,
+  async (req, res, next) => {
+    try {
+      const room = await RoomModel.findById(req.params.id)
+      if (room) {
+        req.body.sender = req.user._id
+        const updateChatHistory = await RoomModel.findByIdAndUpdate(
+          req.params.id,
+          {
+            $push: {
+              chatHistory: req.body,
+            },
+          },
+          {
+            runValidators: true,
+            new: true,
+          }
+        )
+        res.status(201).send(updateChatHistory)
+      } else {
+        next(createError(404, "post not found"))
+      }
+    } catch (error) {
+      next(createError(500, "an error occurred while adding a user to a room"))
+    }
+  }
+)
 
 export default roomsRouter
