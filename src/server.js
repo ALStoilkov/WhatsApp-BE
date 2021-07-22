@@ -70,12 +70,12 @@ io.on("connection", (socket) => {
 
   socket.on("sendMessage", async ({ message, room }) => {
     console.log("mess and room", message, room)
-    // socket.to(room).emit("message", message)
     await RoomModel.findByIdAndUpdate(room, {
       $push: {
         chatHistory: message,
       },
     })
+    socket.to(room).emit("message", message)
   })
 })
 

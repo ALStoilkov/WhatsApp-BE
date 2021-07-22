@@ -9,7 +9,7 @@ const roomsRouter = Router()
 roomsRouter.post("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const newRoom = new RoomModel(req.body)
-    newRoom.users.push(req.user)
+    newRoom.users.push(req.user) //check
     const response = await newRoom.save()
     res.status(201).send(response._id)
   } catch (error) {
@@ -56,7 +56,7 @@ roomsRouter.get("/myRooms", JWTAuthMiddleware, async (req, res, next) => {
     const rooms = await RoomModel.find({ users: req.user }).populate("users")
 
     const mysocket = onlineUsers[req.user._id]
-    for (let room of rooms) mysocket.join(room._id)
+    for (let room of rooms) mysocket.join(room._id.toString())
 
     console.log(mysocket.rooms)
 
