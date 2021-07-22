@@ -26,7 +26,7 @@ usersRouter.get("/", async (req, res, next) => {
   }
 });
 
-usersRouter.get("/search/", async (req, res, next) => {
+usersRouter.get("/search", async (req, res, next) => {
   try {
     const users = await UserModel.find(
       { username: req.query.username },
