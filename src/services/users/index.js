@@ -5,6 +5,25 @@ import { JWTAuthenticate } from "../../auth/tools.js"
 
 const usersRouter = Router()
 
+usersRouter.post("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body
+    console.log(email)
+    const user = await UserModel.checkCredentials(email, password)
+
+    if (user) {
+      console.log("credentials are fine")
+      const accessToken = await JWTAuthenticate(user)
+      console.log("token", accessToken)
+      res.send({ accessToken, userId: user._id })
+    } else {
+      next(createError(401))
+    }
+  } catch (error) {
+    next(error)
+  }
+})
+
 usersRouter.post("/", async (req, res) => {
   try {
     const newUser = new UserModel(req.body)
@@ -26,12 +45,11 @@ usersRouter.get("/", async (req, res, next) => {
   }
 })
 
-usersRouter.get("/:username", async (req, res, next) => {
+usersRouter.get("/search", async (req, res, next) => {
+  console.log(req.query)
+  const { username } = req.query
   try {
-    const users = await UserModel.find(
-      { username: req.params.username },
-      { email: 0 }
-    )
+    const users = await UserModel.find({ username }, { email: 0 })
 
     if (users) {
       res.status(200).send(users)
@@ -42,15 +60,15 @@ usersRouter.get("/:username", async (req, res, next) => {
   }
 })
 
-// usersRouter.get('/:id', async (req, res, next) => {
-//   try {
-//     const user = await UserModel.findById(req.params.id);
-//     if (!user) next(createError(404, `ID ${req.params.id} was not found`));
-//     else res.status(200).send(user);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+usersRouter.get("/:id", async (req, res, next) => {
+  try {
+    const user = await UserModel.findById(req.params.id)
+    if (!user) next(createError(404, `ID ${req.params.id} was not found`))
+    else res.status(200).send(user)
+  } catch (error) {
+    next(error)
+  }
+})
 
 usersRouter.put("/:id", async (req, res, next) => {
   try {
