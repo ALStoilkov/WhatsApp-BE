@@ -1,4 +1,5 @@
 import { Router } from "express";
+import createError from "http-errors";
 import UserModel from "../../models/User/index.js";
 import { JWTAuthenticate } from "../../auth/tools.js";
 import multer from "multer";
@@ -7,14 +8,95 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 const usersRouter = Router();
 
-usersRouter.post("/", async (req, res) => {
-  const newUser = new UserModel(req.body);
-  await newUser.save();
+usersRouter.post("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    console.log(email);
+    const user = await UserModel.checkCredentials(email, password);
 
-  res.status(201).send(newUser);
+    if (user) {
+      console.log("credentials are fine");
+      const accessToken = await JWTAuthenticate(user);
+      console.log("token", accessToken);
+      res.send({ accessToken, userId: user._id });
+    } else {
+      next(createError(401));
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 
-//------------------------------------CLOUDINARY---
+usersRouter.post("/", async (req, res) => {
+  try {
+    const newUser = new UserModel(req.body);
+    const { _id } = await newUser.save();
+
+    res.status(201).send(_id);
+  } catch (error) {
+    console.log(error);
+    next(createError(500, "An error occurred while saving new author"));
+  }
+});
+
+usersRouter.get("/", async (req, res, next) => {
+  try {
+    const users = await UserModel.find();
+    res.status(200).send(users);
+  } catch (error) {
+    next(createError(500, { message: error.message }));
+  }
+});
+
+usersRouter.get("/search", async (req, res, next) => {
+  console.log(req.query);
+  const { username } = req.query;
+  try {
+    const users = await UserModel.find({ username }, { email: 0 });
+
+    if (users) {
+      res.status(200).send(users);
+    }
+    res.send(createError(404, "No user found"));
+  } catch (error) {
+    next(error);
+  }
+});
+
+usersRouter.get("/:id", async (req, res, next) => {
+  try {
+    const user = await UserModel.findById(req.params.id);
+    if (!user) next(createError(404, `ID ${req.params.id} was not found`));
+    else res.status(200).send(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+usersRouter.put("/:id", async (req, res, next) => {
+  try {
+    const updateUser = await UserModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { runValidators: true, new: true }
+    );
+    res.status(201).send(updateUser);
+  } catch (error) {
+    next(error);
+  }
+});
+
+usersRouter.delete("/:id", async (req, res, next) => {
+  try {
+    const deleteUser = await UserModel.findByIdAndDelete(req.params.id);
+    if (deleteUser) res.status(201).send("Profile deleted");
+    else next(createError(400, "Bad Request"));
+  } catch (error) {
+    next(error);
+  }
+});
+
+//------------------------------------CLOUDINARY
 
     const cloudinaryStorage = new CloudinaryStorage({
 			cloudinary,
@@ -27,13 +109,9 @@ usersRouter.post("/", async (req, res) => {
 
 		usersRouter.post("/:id/upload", upload, async (req, res, next) => {
 			try {
-				const data = await user.update(
-					{ imageUrl: req.file.path },
-					{
-						where: { _id: req.params.id },
-						returning: true,
-					}
-          )
+				const data = await UserModel.findByIdAndUpdate(
+    { _id: req.params.id },
+    { avatar: req.file.path })
           console.log(data)
 				if (data[0] === 1) res.send(data[1][0])
 				else res.status(404).send("ID not found")
