@@ -10,6 +10,7 @@ import {
   forbiddenErrorHandler,
   catchAllErrorHandler,
 } from "./errorHandlers.js"
+import RoomModel from "./models/Room/index.js"
 
 const app = express()
 app.use(cors())
@@ -18,21 +19,27 @@ app.use(express.json())
 const server = createServer(app)
 const io = new Server(server, { allowEIO3: true })
 
-export const onlineUsers = [
-  //'userid': socket
-]
+export const onlineUsers = {
+  //'userid': {
+  //  socket,
+  //  userInfo
+  //}
+}
+
+// GET /onlineusers
+
+/**
+ * Object.values(onlineUsers).map(u => u.userInfo)
+ */
 
 // Add "event listeners" on your socket when it's connecting
 io.on("connection", (socket) => {
-  console.log(socket.id)
-  console.log(socket)
-
   console.log(socket.rooms)
 
-  // socket.on("did-connect", (userId) => {
-  //   // 'gregorio123'
-  //   onlineUsers[userId] = socket // onlineUsers['gregorio123'] = socket
-  // })
+  socket.on("did-connect", (userId) => {
+    // 'gregorio123'
+    onlineUsers[userId] = socket // onlineUsers['gregorio123'] = socket
+  })
 
   // socket.on("join-room", (room) => {
   //     socket.join(room)
@@ -61,15 +68,14 @@ io.on("connection", (socket) => {
   //   onlineUsers = onlineUsers.filter((user) => user.id !== socket.id)
   // })
 
-  socket.on("sendMessage", ({ message }) => {
-    // await RoomModel.findOneAndUpdate(
-    //   { name: room },
-    //   {
-    //     $push: { chatHistory: message },
-    //   }
-    // )
-
-    io.sockets.emit("message", message)
+  socket.on("sendMessage", async ({ message, room }) => {
+    console.log("mess and room", message, room)
+    await RoomModel.findByIdAndUpdate(room, {
+      $push: {
+        chatHistory: message,
+      },
+    })
+    socket.to(room).emit("message", message)
   })
 })
 
