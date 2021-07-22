@@ -5,6 +5,25 @@ import { JWTAuthenticate } from "../../auth/tools.js";
 
 const usersRouter = Router();
 
+usersRouter.post("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    console.log(email);
+    const user = await UserModel.checkCredentials(email, password);
+
+    if (user) {
+      console.log("credentials are fine");
+      const accessToken = await JWTAuthenticate(user);
+      console.log("token", accessToken);
+      res.send({ accessToken, userId: user._id });
+    } else {
+      next(createError(401));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 usersRouter.post("/", async (req, res) => {
   try {
     const newUser = new UserModel(req.body);
@@ -27,11 +46,10 @@ usersRouter.get("/", async (req, res, next) => {
 });
 
 usersRouter.get("/search", async (req, res, next) => {
+  console.log(req.query);
+  const { username } = req.query;
   try {
-    const users = await UserModel.find(
-      { username: req.query.username },
-      { email: 0 }
-    );
+    const users = await UserModel.find({ username }, { email: 0 });
 
     if (users) {
       res.status(200).send(users);
@@ -70,25 +88,6 @@ usersRouter.delete("/:id", async (req, res, next) => {
     const deleteUser = await UserModel.findByIdAndDelete(req.params.id);
     if (deleteUser) res.status(201).send("Profile deleted");
     else next(createError(400, "Bad Request"));
-  } catch (error) {
-    next(error);
-  }
-});
-
-usersRouter.post("/login", async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-    console.log(email);
-    const user = await UserModel.checkCredentials(email, password);
-
-    if (user) {
-      console.log("credentials are fine");
-      const accessToken = await JWTAuthenticate(user);
-      console.log("token", accessToken);
-      res.send({ accessToken, userId: user._id });
-    } else {
-      next(createError(401));
-    }
   } catch (error) {
     next(error);
   }
