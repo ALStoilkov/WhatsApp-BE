@@ -2,24 +2,29 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
 const UserSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  role: {
-    type: String,
-    required: true,
-    enum: ['Admin', 'User'],
-    default: 'User',
-  },
+	username: {
+		type: String,
+		required: true,
+	},
+	email: {
+		type: String,
+		required: true,
+	},
+	password: {
+		type: String,
+		required: true,
+	},
+	role: {
+		type: String,
+		required: true,
+		enum: ["Admin", "User"],
+		default: "User",
+	},
+	avatar: {
+		type: String,
+		required: true,
+		default: "https://image.flaticon.com/icons/png/512/5173/5173555.png",
+	},
 });
 
 UserSchema.pre('save', async function (next) {

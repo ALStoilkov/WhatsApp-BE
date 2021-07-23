@@ -36,9 +36,12 @@ export const onlineUsers = {
 io.on("connection", (socket) => {
   console.log(socket.rooms)
 
-  socket.on("did-connect", (userId) => {
+  socket.on("did-connect", async (userId) => {
     // 'gregorio123'
     onlineUsers[userId] = socket // onlineUsers['gregorio123'] = socket
+
+    const rooms = await RoomModel.find({ users: userId })
+    for (let room of rooms) socket.join(room._id.toString())
   })
 
   // socket.on("join-room", (room) => {
@@ -75,8 +78,18 @@ io.on("connection", (socket) => {
         chatHistory: message,
       },
     })
-    socket.to(room).emit("message", message)
+    socket.to(room).emit("message", { message, room })
   })
+})
+
+app.get("/sockets", (req, res) => {
+  const response = Object.entries(onlineUsers).map(([uuid, socket]) => [
+    uuid,
+    socket.rooms,
+  ])
+
+  console.log(response)
+  res.send(response)
 })
 
 app.use("/users", usersRouter)
