@@ -55,10 +55,10 @@ roomsRouter.get("/myRooms", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const rooms = await RoomModel.find({ users: req.user }).populate("users")
 
-    const mysocket = onlineUsers[req.user._id]
-    for (let room of rooms) mysocket.join(room._id.toString())
+    // const mysocket = onlineUsers[req.user._id]
+    // for (let room of rooms) mysocket.join(room._id.toString())
 
-    console.log(mysocket.rooms)
+    //console.log(mysocket.rooms)
 
     if (rooms) {
       res.status(200).send({ rooms, myId: req.user._id })
