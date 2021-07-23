@@ -2,6 +2,7 @@ import { Router } from "express";
 import createError from "http-errors";
 import UserModel from "../../models/User/index.js";
 import { JWTAuthenticate } from "../../auth/tools.js";
+import { JWTAuthMiddleware } from "../../auth/middlewares.js";
 import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
